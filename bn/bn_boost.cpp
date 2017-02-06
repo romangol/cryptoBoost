@@ -10,6 +10,30 @@ namespace boost
 	}
 }
 
+cpp_int pow_mod( cpp_int base, cpp_int power, const cpp_int & mod  )
+{
+	if (power == 0)
+        return 1;
+
+	cpp_int r = 1;
+	cpp_int blind = 1;
+	while ( power != 0 )
+	{
+		if ( power % 2  == 1 )
+		{
+			r = r * base % mod;
+		}
+		else
+		{
+			blind = r * base % mod; // remove time differential
+		}
+		base =  base * base % mod;
+		power /= 2;
+	}
+	
+	return r;
+}
+
 cpp_int gcd( const cpp_int & a, const cpp_int & b )
 {
 	if ( a == b )
@@ -42,8 +66,6 @@ cpp_int gcd( const cpp_int & a, const cpp_int & b )
 		y = remainder;
 	}
 }
-
-
 
 // calc z^-1 % m
 cpp_int inv_mod( const cpp_int & z, const cpp_int & m )
