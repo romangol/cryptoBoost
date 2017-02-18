@@ -10,28 +10,13 @@ namespace boost
 	}
 }
 
-cpp_int pow_mod( cpp_int base, cpp_int power, const cpp_int & mod  )
+cpp_int mod( const cpp_int & a, const cpp_int & m )
 {
-	if (power == 0)
-        return 1;
-
-	cpp_int r = 1;
-	cpp_int blind = 1;
-	while ( power != 0 )
+	if ( a < 0 )
 	{
-		if ( power % 2  == 1 )
-		{
-			r = r * base % mod;
-		}
-		else
-		{
-			blind = r * base % mod; // remove time differential
-		}
-		base =  base * base % mod;
-		power /= 2;
+		return m + a % m;
 	}
-	
-	return r;
+	return a % m;
 }
 
 cpp_int gcd( const cpp_int & a, const cpp_int & b )
@@ -58,9 +43,13 @@ cpp_int gcd( const cpp_int & a, const cpp_int & b )
 		remainder = x % y;
 
 		if ( remainder ==  0 )
+		{
 			return y;
+		}
 		if ( remainder ==  1 )
+		{
 			return remainder;
+		}
 
 		x = y;
 		y = remainder;
@@ -70,39 +59,25 @@ cpp_int gcd( const cpp_int & a, const cpp_int & b )
 // calc z^-1 % m
 cpp_int inv_mod( const cpp_int & z, const cpp_int & m )
 {
-	if ( z == m )
-		return 0;
+	if ( m < 0 ) throw 0x19841207;
 	
-	cpp_int a, b;
-	cpp_int r, q;
-	cpp_int s = 1;
-	cpp_int t = 0;
-	
-	if ( z > 0 && m > 0 )
+	if ( z % m == 0 ) return 0;
+
+	cpp_int x = 0;
+	cpp_int yy = 0;
+	cpp_int y = 1;
+	cpp_int xx = 1;
+	cpp_int b = m;
+	cpp_int a = mod(z, m);
+	cpp_int tmp;
+
+	while ( b != 0 )
 	{
-		a = m;
-		if ( z < m )
-			b = z;
-		else
-			b = z % m;
-
-		while ( b > 0 ) // until j = 0
-		{
-			q = t - s * (a / b);
-			r = a % b;
-
-			// update!
-			a = b; b = r;
-			t = s; s = q;
-		}
-		if (a == 1) // always return positive value
-		{
-			q = t % m;
-			if ( q < 0 )
-				return q + m;
-			return q;
-		}
+		cpp_int q = a / b;
+		tmp = b; b = a % b; a = tmp;
+		tmp = x; x = xx - q * x; xx = tmp;
+		tmp = y; y = yy - q * y ; yy = tmp;
 	}
 
-	return 0;
+	return (xx % m) + (xx < 0 ? m : 0);
 }

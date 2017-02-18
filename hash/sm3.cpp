@@ -20,7 +20,7 @@ void sm3_update(sm3_ctx_t & ctx, const uint8_t * data, size_t data_len)
 {
 	if (ctx.num)
 	{
-		uint32_t left = SM3_BLOCK_SIZE - ctx.num;
+		size_t left = SM3_BLOCK_SIZE - ctx.num;
 		if (data_len < left)
 		{
 			memcpy(ctx.block + ctx.num, data, data_len);
@@ -68,8 +68,8 @@ void sm3_final(sm3_ctx_t & ctx, uint8_t * digest)
 		memset(ctx.block, 0, SM3_BLOCK_SIZE - 8);
 	}
 
-	count[0] = cpu_to_be32((ctx.nblocks) >> 23);
-	count[1] = cpu_to_be32((ctx.nblocks << 9) + (ctx.num << 3));
+	count[0] = static_cast<uint32_t>( cpu_to_be32((ctx.nblocks) >> 23) );
+	count[1] = static_cast<uint32_t>( cpu_to_be32((ctx.nblocks << 9) + (ctx.num << 3)) );
 
 	sm3_compress(ctx.digest, ctx.block);
 	
