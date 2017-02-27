@@ -73,7 +73,7 @@ int test_RSA()
 	k.e = 0x10001;
 	k.keyLen = 256;
 	
-	printf("key len %zd\n", set_rsa_key(k));
+	printf("key len %zd\n", calc_rsa_key(k));
 
 	// cpp_int cipher = rsa_encrypt( 1207, k );
 	// std::cout << rsa_decrypt( cipher, k ) << std::endl;
@@ -84,9 +84,9 @@ int test_RSA()
 		0xdf, 0x9a, 0x19, 0xe6, 0x60, 0xa6, 0xdf, 0x8d, 0x19, 0x56, 0xa5, 0xce, 0xd0, 0x7e, 0x86, 0x6c
 	};
 	unsigned char ciph[128];
-	rsa_enc( rhash, 32, ciph, k );
+	rsa_enc_oaep( rhash, 32, ciph, k );
 	
-	rsa_dec( ciph, 128, rhash, k );
+	rsa_dec_oaep( ciph, 128, rhash, k );
 	outputChar(rhash, 32);
 	
 	return 1;
