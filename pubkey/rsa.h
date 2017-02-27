@@ -23,9 +23,9 @@ struct RSAKey
 size_t		calc_rsa_key	( RSAKey & key );
 bool		verify_rsa_key	( const RSAKey & key );
 
-size_t rsa_enc_oaep( SKB_Byte * msg, size_t msgLen, SKB_Byte * cipher, const RSAKey & key, bool is_sign = false );
-size_t rsa_dec_oaep( SKB_Byte * cipher, size_t textLen, SKB_Byte * msg, const RSAKey & key, bool is_sign = false );
-size_t rsa_enc_pkcs15( SKB_Byte * msg, size_t msgLen, SKB_Byte * cipher, const RSAKey & key, bool is_sign = false );
-size_t rsa_dec_pkcs15( SKB_Byte * cipher, size_t textLen, SKB_Byte * msg, const RSAKey & key, bool is_sign = false );
+size_t rsa_enc_oaep( uint8_t * msg, size_t msgLen, uint8_t * cipher, const RSAKey & key, bool is_sign = false );
+size_t rsa_dec_oaep( uint8_t * cipher, size_t textLen, uint8_t * msg, const RSAKey & key, bool is_sign = false );
+size_t rsa_enc_pkcs15( uint8_t * msg, size_t msgLen, uint8_t * cipher, const RSAKey & key, bool is_sign = false );
+size_t rsa_dec_pkcs15( uint8_t * cipher, size_t textLen, uint8_t * msg, const RSAKey & key, bool is_sign = false );
 
 #endif
