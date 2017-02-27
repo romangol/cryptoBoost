@@ -1,12 +1,32 @@
 #include "./pubkey/ecc.h"
 #include "./pubkey/RSA.h"
 #include "./hash/sm3.h"
+#include "./hash/sha256.h"
 #include "romangol.h"
+#include "./prng/random.h"
 
 using namespace boost::multiprecision;
 
+int test_sha256()
+{
+	puts("test_sha256()");
+	unsigned char msg[] = "RomanGol";
+	unsigned char dgst[SHA256_DIGEST_LENGTH] = {0};
+	sha256( msg, 8, dgst );
+
+	// checkpoint charlie
+	// should be
+	// 0x63, 0xd8, 0x9b, 0xca, 0x91, 0x87, 0x68, 0x54, 0x91, 0xd3, 0xe9, 0x3e, 0x11, 0x48, 0x02, 0x5f,
+	// 0xdf, 0x9a, 0x19, 0xe6, 0x60, 0xa6, 0xdf, 0x8d, 0x19, 0x56, 0xa5, 0xce, 0xd0, 0x7e, 0x86, 0x6c
+	outputChar(dgst, SHA256_DIGEST_LENGTH);
+
+	return 0;
+}
+
+
 void test_int128()
 {
+	puts("test_int128()");
 	int128_t l( "43017329585047238859772730236143539894" );
 	int128_t r( "172021209466525381274003664777717609141" );
 	
@@ -18,6 +38,7 @@ void test_int128()
 
 void test_gcd_imod()
 {
+	puts("test_gcd_imod()");
 	// checkpoint charlie
 	// should be 7 instead of -4
 	std::cout << "inv_mod(8, 11) = " << inv_mod(8,11) << std::endl;
@@ -39,6 +60,7 @@ void test_gcd_imod()
 
 int test_RSA()
 {
+	puts("test_RSA()");
 	RSAKey k;
 	k.n = cpp_int
 	("0xa3fe266f0b5ee57512cdf6c4c016d9ba21cba91e7c82d2b13399027520aebcc264bf2b124a9ff4a9bd9c3282b0a24ff13de2faed44c02b6e74c6ee71fdcf265ebac5c15e69f1a722e509b81687c416ef77d3ec43326a089cd6875c7eb0bcd7c3762f8db8d6ded8ecdb32bce7d1ede900d8e0da7ea797f4872e5ba97e40e220dd");
@@ -49,20 +71,41 @@ int test_RSA()
 	k.q = cpp_int
 	("0xde2d31b77541785812573acd705894d811e5c9dd7b013e5d0d90af437e47f6602a32cc413911a51ac038dd4e916bbbc0c9075c166cec5d108f5781337539f90b");
 	k.e = 0x10001;
+	k.keyLen = 256;
 	
-	set_rsa_key(k);
-	puts("set key!");
+	printf("key len %zd\n", set_rsa_key(k));
 
-	cpp_int cipher = rsa_encrypt( 1207, k );
-	std::cout << rsa_decrypt( cipher, k ) << std::endl;
+	// cpp_int cipher = rsa_encrypt( 1207, k );
+	// std::cout << rsa_decrypt( cipher, k ) << std::endl;
+
+	uint8_t rhash[] = // SHA256 of "RomanGol"
+	{
+		0x63, 0xd8, 0x9b, 0xca, 0x91, 0x87, 0x68, 0x54, 0x91, 0xd3, 0xe9, 0x3e, 0x11, 0x48, 0x02, 0x5f,
+		0xdf, 0x9a, 0x19, 0xe6, 0x60, 0xa6, 0xdf, 0x8d, 0x19, 0x56, 0xa5, 0xce, 0xd0, 0x7e, 0x86, 0x6c
+	};
+	unsigned char ciph[128];
+	rsa_enc( rhash, 32, ciph, k );
+	
+	rsa_dec( ciph, 128, rhash, k );
+	outputChar(rhash, 32);
 	
 	return 1;
 }
 
 int test_sm2()
 {
+	puts("test_sm2()");
 	Curve sm2;
-	sm2.a = cpp_int("0xFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC");
+	
+	unsigned char sm2_param_a[] = 
+	{
+		0xFF, 0xFF, 0xFF, 0xFE, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 
+		0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFC
+	};
+	sm2.a = cppint_from_uint8( sm2_param_a, sizeof(sm2_param_a) );
+	//sm2.a = cpp_int("0xFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFC");
 	sm2.b = cpp_int("0x28E9FA9E9D9F5E344D5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E93");
 	sm2.n = cpp_int("0xFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF");
 	cpp_int order = cpp_int("0xFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFF7203DF6B21C6052B53BBF40939D54123");
@@ -149,10 +192,22 @@ void test_file_hash()
 	outputChar( dgst, SM3_DIGEST_LENGTH );
 }
 
+int test_random()
+{
+	unsigned char buf[1024];
+	random_fill( buf, sizeof(buf) );
+	
+	outputChar( buf, sizeof(buf) );
+	
+	return 0;
+}
+
 int main()
 {
-	test_hash();
-	test_file_hash();
+	// test_hash();
+	// test_file_hash();
 	test_RSA();
-	test_sm2();
+	// test_sm2();
+	// test_random();
+	// test_sha256();
 }

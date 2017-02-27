@@ -1,12 +1,50 @@
 #include "bn_boost.h"
+#include <string>
+#include <iostream>
 
-using namespace boost::multiprecision;
+using std::string;
 
-namespace boost
+cpp_int cppint_from_uint8( uint8_t * buffer, size_t len, bool usingLE )
 {
-	void throw_exception(std::exception const & e)
+	string s;
+	char tmpBuf[3] = {0, 0, 0};
+
+	for ( size_t i = 0; i < len; ++i )
 	{
-		throw e;
+		sprintf(tmpBuf, "%02x", buffer[i]);
+		if ( usingLE )
+			s = string(tmpBuf) + s;
+		else
+			s += string(tmpBuf);
+	}
+
+	return cpp_int( string("0x") + s );
+}
+
+
+void cppint_to_uint8( const cpp_int & input, uint8_t * buffer, size_t len, bool usingLE )
+{
+	std::ostringstream ost;
+	ost << std::hex << input; 
+	string str = ost.str();
+
+	if ( len < str.size() / 2 )
+		return;
+
+	size_t padLen = len * 2 - str.size();
+	for ( size_t i = 0; i < padLen; ++i )
+		str = string("0") + str;
+
+	for ( size_t i = 0; i < len; ++i )
+	{
+		if ( usingLE )
+		{
+			buffer[len - i - 1] = std::stoi( str.substr(i * 2, 2), 0, 16 );
+		}
+		else
+		{
+			buffer[i] = std::stoi( str.substr(i * 2, 2), 0, 16 );
+		}
 	}
 }
 
@@ -54,6 +92,11 @@ cpp_int gcd( const cpp_int & a, const cpp_int & b )
 		x = y;
 		y = remainder;
 	}
+}
+
+cpp_int lcm( const cpp_int & a, const cpp_int & b )
+{
+	return a / gcd(a, b) * b;
 }
 
 // calc z^-1 % m

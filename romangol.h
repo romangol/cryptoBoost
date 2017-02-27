@@ -24,8 +24,6 @@ void outputDword( unsigned int * text, size_t len )
 	puts("");
 }
 
-
-
 unsigned int ROR(unsigned int s, size_t times)
 {
     unsigned int t = s;
@@ -41,6 +39,16 @@ unsigned int ROL(unsigned int s, size_t times)
         t = (t << 1) + ((t & 0x80000000) >> 31);
     return t;
 }
+
+class NonCopyable
+{
+protected:
+	NonCopyable () {}
+	~NonCopyable () {} /// Protected non-virtual destructor
+private: 
+	NonCopyable (NonCopyable const &);
+	NonCopyable & operator = (NonCopyable const &);
+};
 
 #define ROTATELEFT(X,n)  (((X)<<(n)) | ((X)>>(32-(n))))
 

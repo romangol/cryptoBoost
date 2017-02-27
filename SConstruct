@@ -1,7 +1,7 @@
 import os
 env = Environment(ENV = os.environ)
 
-File_list = ['./blockcipher/sm4.cpp', './hash/sm3.cpp', './bn/bn_boost.cpp', './pubkey/ecc.cpp', './pubkey/RSA.cpp', './tester.cpp']
+File_list = ['./blockcipher/sm4.cpp', './hash/sm3.cpp', './hash/sha256.cpp', './bn/bn_boost.cpp', './pubkey/ecc.cpp', './pubkey/RSA.cpp', './prng/random.cpp',  './tester.cpp']
 
 #Lib_list = ['kernel32.lib', 'user32.lib', 'winmm.lib', 'wsock32.lib']
 #env.Append( LIBS = Lib_list )
