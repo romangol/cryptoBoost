@@ -104,9 +104,10 @@ void sha256_update(SHA256_ctx & ctx, const uint8_t data[], size_t len)
 	{
 		ctx.data[ctx.datalen] = data[i];
 		ctx.datalen++;
-		if (ctx.datalen == 64) {
+		if (ctx.datalen == 64)
+		{
 			sha256_transform(ctx, ctx.data);
-			ctx.bitlen += 512;
+			ctx.bitlen += SHA256_BLOCK_SIZE * 8;
 			ctx.datalen = 0;
 		}
 	}

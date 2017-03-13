@@ -75,7 +75,7 @@ static cpp_int crt_modpow( const cpp_int & ciphertext, const RSAKey & key )
 	 * (presult-qresult) * (iqmp * q) which adjusts it to be congruent
 	 * to presult mod p without affecting its value mod q.
 	 */
-	if ( presult < qresult )
+	while ( presult < qresult )
 	{
 		/*
 		 * Can't subtract presult from qresult without first adding on p.
