@@ -9,8 +9,10 @@ File_list = ['./blockcipher/sm4.cpp', './hash/sm3.cpp', './hash/sha256.cpp', './
 #Inc_list = ['./src/']
 #env.Append( CPPPATH = Inc_list )
 
-Def_list = ['WIN32','_WINDOWS', '_CRT_SECURE_NO_WARNINGS', 'NDEBUG']
-ccflags_str = '/EHsc /nologo /W3 /O2 /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /FD /c'
+#Def_list = ['WIN32','_WINDOWS', '_CRT_SECURE_NO_WARNINGS', 'NDEBUG']
+Def_list = ['DEBUG']
+#ccflags_str = '/EHsc /nologo /W3 /O2 /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /FD /c'
+ccflags_str = '-I /mingw32/include '
 
 # lflags_str = 'kernel32.lib user32.lib wsock32.lib winmm.lib /nologo /subsystem:console /incremental:yes /machine:I386 /out:nc.exe'
 

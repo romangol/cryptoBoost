@@ -100,6 +100,8 @@ struct Curve
 	cpp_int a;
 	cpp_int b;
 	cpp_int n;
+//base point
+	EPoint G; 
 };
 
 bool is_null		( const EPoint & point );
@@ -113,5 +115,18 @@ EPoint		from_projective	( const JPoint & jpoint, const cpp_int & n );
 EPoint		neg				( const EPoint & point, const cpp_int & n);
 EPoint		add				( const EPoint & p, const EPoint & q, const Curve & curve );
 EPoint 		mul				( cpp_int k, EPoint p, const Curve & curve );
+
+struct Curve secp256r1 
+{
+	//y**2 = x**3 - a*x - b
+	.a = cpp_int("-0xffffffff00000001000000000000000000000000fffffffffffffffffffffffc"),
+	.b = cpp_int("-0x5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b"),
+	.n = cpp_int("0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff"),
+	.G = (struct EPoint) { 
+		.x = cpp_int("0x6b17d1f2e12c4247f8bce6e563a440f277037d812deb33a0f4a13945d898c296"),
+		.y = cpp_int("0x4fe342e2fe1a7f9b8ee7eb4a7c0f9e162bce33576b315ececbb6406837bf51f5")
+	}
+};
+
 
 #endif

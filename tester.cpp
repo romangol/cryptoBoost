@@ -202,12 +202,13 @@ int test_random()
 	return 0;
 }
 
+
 int main()
 {
-	// test_hash();
-	// test_file_hash();
+	 test_hash();
+	 test_file_hash();
 	test_RSA();
-	// test_sm2();
-	// test_random();
-	// test_sha256();
+	 test_sm2();
+	 test_random();
+	 test_sha256();
 }

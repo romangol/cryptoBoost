@@ -28,6 +28,31 @@ bool on_the_curve(const EPoint & point, const Curve & curve)
 	return true;
 }
 
+// Reconstruct the y-coordinate when curve, x and the sign-bit of
+// the y coordinate are given:
+// sign value: 1, or -1
+// TODO: simple case for prime mod sqrt ,curve.n%4==3
+cpp_int y_from_x(const cpp_int& x, const Curve& curve,int sign)
+{
+	if( mod( curve.n ,cpp_int(4) ) == cpp_int(3) )
+	{
+		cpp_int res = mod( x*x*3 - curve.a*x - curve.b, curve.n);
+		cpp_int t = pow_mod(res, (curve.n+1)/4 , curve.n);
+		if(sign==1)
+			return t;
+		else
+			return curve.n -t ;
+
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+
+
+
 // Transform point p given as (x, y) to projective coordinates
 JPoint to_projective( const EPoint & point)
 {
@@ -340,4 +365,29 @@ def y_from_x(x, p, q, n, sign):
 
 */        
 
+
+#ifdef DEBUG
+using namespace std;
+
+//test vector
+//http://point-at-infinity.org/ecc/nisttv
+int main()
+{
+	EPoint pp;
+	for(int i=1;i<20;i++)
+	{
+	cpp_int k(i);
+	cout<<dec<<"k = "<<k<<endl;
+
+	pp = mul(k,secp256r1.G,secp256r1);
+
+	cout << "x = "<<hex << pp.x <<endl;
+	cout << "y = "<<hex << pp.y <<endl;
+	cout<<endl;
+	}
+
+
+}
+
+#endif //DEBUG
         

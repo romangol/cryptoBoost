@@ -19,5 +19,15 @@ int main()
 	
 	outputChar(buf, 7);
 
+
+	std::cout << std::dec <<k<<std::endl;
+
+
+	cpp_int a(15);
+	cpp_int b(443);
+	cpp_int c(37);
+
+	std::cout << std::dec << pow_mod(a,b,c) << std::endl;
+
 	return 0;
 }
