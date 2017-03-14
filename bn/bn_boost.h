@@ -11,7 +11,7 @@ cpp_int inv_mod		( const cpp_int & z, const cpp_int & m );
 cpp_int pow_mod		( cpp_int base, cpp_int power, const cpp_int & mod  );
 cpp_int mod			( const cpp_int & a, const cpp_int & m );
 
-cpp_int		cppint_from_uint8	( uint8_t * buffer, size_t len, bool usingLE = false );
+cpp_int		cppint_from_uint8	( const uint8_t * buffer, size_t len, bool usingLE = false );
 void		cppint_to_uint8		( const cpp_int & input, uint8_t * buffer, size_t len, bool usingLE = false );
 
 #endif

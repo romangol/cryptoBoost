@@ -255,26 +255,3 @@ void sha1(const uint8_t data[], size_t len, uint8_t digest[SHA1_DIGEST_LENGTH])
     sha1_final(s, digest);
 }
 
-
-/*
-Test Vectors (from FIPS PUB 180-1)
-"abc"
-  A9993E36 4706816A BA3E2571 7850C26C 9CD0D89D
-"abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"
-  84983E44 1C3BD26E BAAE4AA1 F95129E5 E54670F1
-A million repetitions of "a"
-  34AA973C D4C4DAA4 F61EEB2B DBAD2731 6534016F
-*/
-
-int main()
-{
-	uint8_t vec1[] = "abc";
-	uint8_t vec2[] = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
-	uint8_t digest[20];
-	
-	sha1( vec2, sizeof(vec2) - 1, digest );
-	for ( size_t i = 0; i < 20; ++i )
-		printf("%02x", digest[i] );
-	puts("");
-	
-}

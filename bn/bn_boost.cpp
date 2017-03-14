@@ -4,7 +4,7 @@
 
 using std::string;
 
-cpp_int cppint_from_uint8( uint8_t * buffer, size_t len, bool usingLE )
+cpp_int cppint_from_uint8( const uint8_t * buffer, size_t len, bool usingLE )
 {
 	string s;
 
@@ -126,19 +126,4 @@ cpp_int inv_mod( const cpp_int & z, const cpp_int & m )
 	return (xx % m) + (xx < 0 ? m : 0);
 }
 
-
-cpp_int pow_mod	( cpp_int base, cpp_int power, const cpp_int & mod  )
-{
-	cpp_int ans=1;
-	
-	base = base %mod;
-	while(power>0)
-	{
-		if(power &1)
-			ans = ans*base %mod;
-		power = power>>1;
-		base = (base *base)%mod;
-	}
-	return ans
-}
 

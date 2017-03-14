@@ -22,7 +22,7 @@ bool on_the_curve(const EPoint & point, const Curve & curve)
 {
 	if ( point.x != 0 || point.y != 0 )
 	{
-		return mod( (point.x * point.x * point.x - curve.a * point.x - curve.b), curve.n ) == mod( (point.y * point.y), curve.n);
+		return mod( (point.x * point.x * point.x - curve.a * point.x - curve.b), curve.p ) == mod( (point.y * point.y), curve.p);
 	}
 	
 	return true;
@@ -31,17 +31,17 @@ bool on_the_curve(const EPoint & point, const Curve & curve)
 // Reconstruct the y-coordinate when curve, x and the sign-bit of
 // the y coordinate are given:
 // sign value: 1, or -1
-// TODO: simple case for prime mod sqrt ,curve.n%4==3
+// TODO: simple case for prime mod sqrt ,curve.p%4==3
 cpp_int y_from_x(const cpp_int& x, const Curve& curve,int sign)
 {
-	if( mod( curve.n ,cpp_int(4) ) == cpp_int(3) )
+	if( mod( curve.p ,cpp_int(4) ) == cpp_int(3) )
 	{
-		cpp_int res = mod( x*x*3 - curve.a*x - curve.b, curve.n);
-		cpp_int t = pow_mod(res, (curve.n+1)/4 , curve.n);
+		cpp_int res = mod( x*x*3 - curve.a*x - curve.b, curve.p);
+		cpp_int t = powm(res, (curve.p+1)/4 , curve.p);
 		if(sign==1)
 			return t;
 		else
-			return curve.n -t ;
+			return curve.p -t ;
 
 	}
 	else
@@ -49,8 +49,6 @@ cpp_int y_from_x(const cpp_int& x, const Curve& curve,int sign)
 		return 0;
 	}
 }
-
-
 
 
 // Transform point p given as (x, y) to projective coordinates
@@ -107,26 +105,26 @@ EPoint add( const EPoint & p, const EPoint & q, const Curve & curve )
 		cpp_int slope;
 		cpp_int x;
 
-		if ( mod( (p.x - q.x), curve.n ) )
+		if ( mod( (p.x - q.x), curve.p ) )
 	    {
-            slope = (p.y - q.y) * inv_mod(p.x - q.x, curve.n);
-            slope = mod(slope, curve.n);
+            slope = (p.y - q.y) * inv_mod(p.x - q.x, curve.p);
+            slope = mod(slope, curve.p);
             x = slope * slope - p.x - q.x;
-            x = mod(x, curve.n);				// intersection with curve
+            x = mod(x, curve.p);				// intersection with curve
         }
         else
         {
-            if ( mod(p.y + q.y, curve.n) )							// slope s calculated by derivation
+            if ( mod(p.y + q.y, curve.p) )							// slope s calculated by derivation
             {
-                slope = (3 * p.x * p.x - curve.a) * inv_mod(2 * p.y, curve.n);
-                slope = mod( slope, curve.n );
+                slope = (3 * p.x * p.x - curve.a) * inv_mod(2 * p.y, curve.p);
+                slope = mod( slope, curve.p );
                 x = slope * slope - 2 * p.x;            			// intersection with curve
-                x = mod(x, curve.n);
+                x = mod(x, curve.p);
             }
 		}
 		r.x = x;
 		r.y = p.y + slope * (x - p.x);
-		r.y = curve.n - mod(r.y, curve.n);
+		r.y = curve.p - mod(r.y, curve.p);
 
 		return r;
     }
@@ -376,14 +374,14 @@ int main()
 	EPoint pp;
 	for(int i=1;i<20;i++)
 	{
-	cpp_int k(i);
-	cout<<dec<<"k = "<<k<<endl;
+		cpp_int k(i);
+		cout<<dec<<"k = "<<k<<endl;
 
-	pp = mul(k,secp256r1.G,secp256r1);
+		pp = mul(k,secp256r1.G,secp256r1);
 
-	cout << "x = "<<hex << pp.x <<endl;
-	cout << "y = "<<hex << pp.y <<endl;
-	cout<<endl;
+		cout << "x = "<<hex << pp.x <<endl;
+		cout << "y = "<<hex << pp.y <<endl;
+		cout<<endl;
 	}
 
 
