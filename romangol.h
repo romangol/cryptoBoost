@@ -67,6 +67,9 @@ private:
 
 #define ROL32(a,b) (((a) << (b)) | ((a) >> (32-(b))))
 #define ROR32(a,b) (((a) >> (b)) | ((a) << (32-(b))))
+#define ROTL8(x) (((x)<<8)|((x)>>24))
+#define ROTL16(x) (((x)<<16)|((x)>>16))
+#define ROTL24(x) (((x)<<24)|((x)>>8))
 
 #define forloop(i, start, end) for ( size_t (i) = (start); (i) < (end); ++(i) )
 #define forstep(i, start, end, step) for ( size_t (i) = (start); (i) < (end); (i) += (step) )

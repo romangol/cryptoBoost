@@ -95,7 +95,7 @@ void test_ecdsa()
 	uint8_t priKey[CURVE_secp256r1_LEN];
 
 	random_fill(priKey, CURVE_secp256r1_LEN);
-	signature[0] &= 0x7f;
+	priKey[0] &= 0x7f;
 
 	EPoint pubKey = mul(cppint_from_uint8(priKey, CURVE_secp256r1_LEN), secp256r1.G, secp256r1);
 
