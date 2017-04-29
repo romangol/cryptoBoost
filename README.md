@@ -1,6 +1,7 @@
 # cryptoBoost
 
 Using boost to help implement cryptographic primitives in a clean style
+
 Re-implement many classic ciphers in C++ style
 
 Current support:
@@ -12,4 +13,5 @@ Current support:
 
 Released by
 GoSSIP @ LoCCS
+
 Shanghai Jiao Tong University
