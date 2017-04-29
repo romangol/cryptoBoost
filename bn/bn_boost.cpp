@@ -1,8 +1,16 @@
-#include "bn_boost.h"
+#include "bigint.h"
 #include <string>
 #include <iostream>
 
 using std::string;
+
+
+static void hex_encode( uint8_t input, char * buffer )
+{
+	const static char table[] = "0123456789ABCDEF";
+	buffer[1] = table[input & 0xf];
+	buffer[0] = table[(input >> 4) & 0xf];
+}
 
 cpp_int cppint_from_uint8( const uint8_t * buffer, size_t len, bool usingLE )
 {
@@ -12,7 +20,7 @@ cpp_int cppint_from_uint8( const uint8_t * buffer, size_t len, bool usingLE )
 
 	for ( size_t i = 0; i < len; ++i )
 	{
-		sprintf(tmpBuf, "%02x", buffer[i]);
+		hex_encode( buffer[i], tmpBuf ); // sprintf(tmpBuf, "%02x", buffer[i]);
 		if ( usingLE )
 			s = string(tmpBuf) + s;
 		else
