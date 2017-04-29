@@ -1,12 +1,12 @@
 #include <iostream>
-#include "DSA.h"
+#include "sm2.h"
 #include "../hash/sha256.h"
 #include "../prng/random.h"
 
 using namespace boost::multiprecision;
 
 
-void ecdsa_sign(const_buf data, size_t len, buf signature, const_buf priKey, const Curve & curve)
+void sm2_sign(const_buf data, size_t len, buf signature, const_buf priKey, const Curve & curve)
 {
 	// 1. hash the message
 	sha256(data, len, signature);
@@ -20,11 +20,12 @@ void ecdsa_sign(const_buf data, size_t len, buf signature, const_buf priKey, con
 	memset(tmp, 0, sizeof(tmp));
 
 	// 3. sign
-	cpp_int pk = cppint_from_uint8(priKey, curve.blockLen);
+	cpp_int dA = cppint_from_uint8(priKey, curve.blockLen);
 	EPoint kG = mul(k, curve.G, curve);
-	cpp_int r = mod( kG.x, curve.n);
-	cpp_int s = mod( (hash + pk * r), curve.n );
-	s = mod( inv_mod(k, curve.n) * s, curve.n );
+	cpp_int r = mod( hash + kG.x, curve.n);
+	cpp_int s = mod( inv_mod(1 + dA, curve.n) * (k - r * dA), curve.n );
+
+	std::cout << s << std::endl;
 
 	// 4. export
 	cppint_to_uint8(r, signature, curve.blockLen);
@@ -32,7 +33,7 @@ void ecdsa_sign(const_buf data, size_t len, buf signature, const_buf priKey, con
 }
 
 
-bool ecdsa_verify(const_buf data, size_t len, buf signature, const EPoint & pubKey, const Curve & curve)
+bool sm2_verify(const_buf data, size_t len, buf signature, const EPoint & pubKey, const Curve & curve)
 {
 	// 1. recover parameters
 	uint8_t hash[SHA256_DIGEST_LENGTH];
@@ -42,11 +43,11 @@ bool ecdsa_verify(const_buf data, size_t len, buf signature, const EPoint & pubK
 	cpp_int s = cppint_from_uint8(signature + CURVE_LEN, CURVE_LEN);
 
 	// 2. verify sign
-	cpp_int w = inv_mod(s, curve.n);
-	EPoint A = mul( mod( (sign * w), curve.n ), curve.G, curve);
-	EPoint B = mul( mod( (r * w), curve.n ), pubKey, curve);
+	cpp_int t = mod(r + s, curve.n);
+	EPoint A = mul( s, curve.G, curve);
+	EPoint B = mul( t, pubKey, curve);
 	EPoint X = add(A, B, curve);
 
-	return mod(X.x, curve.n) == r;
+	return mod(sign + X.x, curve.n) == r;
 }
 

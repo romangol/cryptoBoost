@@ -13,6 +13,7 @@
 #include <iostream>
 #include "../bn/bn_boost.h"
 
+const static size_t CURVE_LEN = 32;
 
 /*
 Module for elliptic curve arithmetic over a prime field GF(n).
