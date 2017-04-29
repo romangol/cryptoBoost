@@ -1,5 +1,5 @@
+#include "AESFast.hpp"
 #include <iostream>
-#include "AESFast.h"
 
 void EncKey_to_DecKey(const AESKey & encKey, AESKey & decKey, size_t rounds)
 {
@@ -281,4 +281,27 @@ void AES256_ECB_dec (const uint8 * in, uint8 * out, size_t length, const uint8 k
 		AES256_block_dec( u, v, decKey );
 		_mm_storeu_si128((uint128 *)(out + i * BLOCK_SIZE), v);
 	}
+}
+
+
+AES256cipher::AES256cipher( uint8_t key[AES256cipher::KEY_LEN] )
+{
+	AES256_Key_Expansion( key, encKey_ );
+	EncKey_to_DecKey( encKey_, decKey_, AES256_ROUNDS );
+}
+
+void AES256cipher::transform( const uint8_t input[AES256cipher::BLK_LEN], uint8_t output[AES256cipher::BLK_LEN] )
+{
+	uint128 u, v;
+	u = _mm_loadu_si128( (uint128 *) (input) );
+	AES256_block_enc( u, v, encKey_ );
+	_mm_storeu_si128((uint128 *)(output), v);
+}
+
+void AES256cipher::transform_inv( const uint8_t input[AES256cipher::BLK_LEN], uint8_t output[AES256cipher::BLK_LEN] )
+{
+	uint128 u, v;
+	u = _mm_loadu_si128( (uint128 *) (input) );
+	AES256_block_enc( u, v, decKey_ );
+	_mm_storeu_si128((uint128 *)(output), v);
 }

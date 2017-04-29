@@ -2,6 +2,7 @@
 #define _AES_FAST_
 
 #include <wmmintrin.h>
+#include <cstdint>
 
 typedef unsigned char	uint8;
 typedef __m128i			uint128;
