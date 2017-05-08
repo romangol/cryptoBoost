@@ -6,6 +6,7 @@ Re-implement many classic ciphers in C++ style
 
 Current support:
 
+- AES, AES-NI
 - SM2, SM3, SM4
 - XTEA
 - RSA, ECDSA

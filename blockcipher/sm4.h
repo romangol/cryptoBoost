@@ -56,7 +56,6 @@ typedef unsigned char  *					buf;
 
 const static size_t SM4_BLOCK_SIZE = 16;
 
-
 struct sm4_ctx_t
 {
     unsigned int skEnc[32];
@@ -64,9 +63,7 @@ struct sm4_ctx_t
 };
 
 void sm4_setkey( sm4_ctx_t & ctx, uint8_t key[SM4_BLOCK_SIZE] );
-void sm4_encrypt_ecb( buf output, const_buf input, size_t length, uint8_t key[SM4_BLOCK_SIZE] );
-void sm4_decrypt_ecb( buf output, const_buf input, size_t length, uint8_t key[SM4_BLOCK_SIZE] );
-void sm4_encrypt_cbc( buf output, const_buf input, size_t length, uint8_t key[SM4_BLOCK_SIZE], uint8_t iv[SM4_BLOCK_SIZE] );
-void sm4_decrypt_cbc( buf output, const_buf input, size_t length, uint8_t key[SM4_BLOCK_SIZE], uint8_t iv[SM4_BLOCK_SIZE] );
+void sm4_encrypt_ecb( const_buf input, size_t length, buf output, uint8_t key[SM4_BLOCK_SIZE] );
+void sm4_decrypt_ecb( const_buf input, size_t length, buf output, uint8_t key[SM4_BLOCK_SIZE] );
 
 #endif /* sm4.h */
