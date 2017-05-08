@@ -7,8 +7,8 @@ public:
 	static const size_t KEY_LEN = 32;
 
 	AES256cipher( uint8_t key[AES256cipher::KEY_LEN] );
-	void transform( const uint8_t input[AES256cipher::BLK_LEN], uint8_t output[AES256cipher::BLK_LEN] );
-	void transform_inv( const uint8_t input[AES256cipher::BLK_LEN], uint8_t output[AES256cipher::BLK_LEN] );
+	void enc_block( const uint8_t input[AES256cipher::BLK_LEN], uint8_t output[AES256cipher::BLK_LEN] );
+	void dec_block( const uint8_t input[AES256cipher::BLK_LEN], uint8_t output[AES256cipher::BLK_LEN] );
 	
 protected:
 	AESKey encKey_;

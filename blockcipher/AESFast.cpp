@@ -290,7 +290,7 @@ AES256cipher::AES256cipher( uint8_t key[AES256cipher::KEY_LEN] )
 	EncKey_to_DecKey( encKey_, decKey_, AES256_ROUNDS );
 }
 
-void AES256cipher::transform( const uint8_t input[AES256cipher::BLK_LEN], uint8_t output[AES256cipher::BLK_LEN] )
+void AES256cipher::enc_block( const uint8_t input[AES256cipher::BLK_LEN], uint8_t output[AES256cipher::BLK_LEN] )
 {
 	uint128 u, v;
 	u = _mm_loadu_si128( (uint128 *) (input) );
@@ -298,7 +298,7 @@ void AES256cipher::transform( const uint8_t input[AES256cipher::BLK_LEN], uint8_
 	_mm_storeu_si128((uint128 *)(output), v);
 }
 
-void AES256cipher::transform_inv( const uint8_t input[AES256cipher::BLK_LEN], uint8_t output[AES256cipher::BLK_LEN] )
+void AES256cipher::dec_block( const uint8_t input[AES256cipher::BLK_LEN], uint8_t output[AES256cipher::BLK_LEN] )
 {
 	uint128 u, v;
 	u = _mm_loadu_si128( (uint128 *) (input) );
